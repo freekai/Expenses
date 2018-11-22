@@ -1,0 +1,16 @@
+
+Main screen:
+
+    - Area for expenses summary
+    - Enter expense
+
+
+Enter expense form:
+
+    - Amount
+    - Date (default today)
+    - Category
+
+Planning screen:
+
+    - Planned expenses by category
