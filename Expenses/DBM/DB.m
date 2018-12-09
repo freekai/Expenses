@@ -54,7 +54,7 @@ static sqlite3 *conn = NULL;
 
 - (BOOL)makeDB {
     NSFileManager *fm = [NSFileManager defaultManager];
-    if ([fm fileExistsAtPath:self.db_path]) {
+    if (![fm fileExistsAtPath:self.db_path]) {
         sqlite3 *conn = NULL;
         NSString *ddl_script_path = [[NSBundle mainBundle] pathForResource:@"ddl" ofType:@"sql"];
         NSString *dml_script_path = [[NSBundle mainBundle] pathForResource:@"dml" ofType:@"sql"];

@@ -9,6 +9,6 @@
 @interface Category : NSObject
 
 @property (nonatomic) NSString *name;
-@property (nonatomic) uint32_t cid;
+@property (nonatomic) NSInteger cid;
 
 @end

@@ -9,7 +9,7 @@
 #import <UIKit/UIKit.h>
 #import "UICategoryPicker.h"
 
-@interface MainViewController : UIViewController {
+@interface MainViewController : UIViewController<UITextFieldDelegate>{
     UIDatePicker *datePicker;
     UICategoryPicker *categoryPicker;
 }

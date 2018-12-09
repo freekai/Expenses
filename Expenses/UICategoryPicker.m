@@ -24,11 +24,6 @@
 
     self.categories = categories;
 
-    for (id o in self.categories) {
-        Category *c = (Category *)o;
-        NSLog(@"%@, %d", c.name, c.cid);
-    }
-
     return self;
 }
 
@@ -38,7 +33,6 @@
 }
 
 - (NSInteger) pickerView:(UIPickerView *)pickerView numberOfRowsInComponent:(NSInteger)component {
-    NSLog(@"Categories: %lu", [self.categories count]);
     return [self.categories count];
 }
 
@@ -46,7 +40,6 @@
     if (row > [self.categories count]) {
         return nil;
     }
-    NSLog(@"Called with row %ld, component %ld", row, component);
     Category *c = (Category *)self.categories[row];
     return c.name;
 }
