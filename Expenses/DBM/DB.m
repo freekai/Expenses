@@ -84,17 +84,19 @@ static sqlite3 *conn = NULL;
     return YES;
 }
 
-- (BOOL)addExpense:(int)amount on:(NSDate *)expense_date in:(int)category {
+- (BOOL)addExpense:(NSInteger)amount on:(NSDate *)expense_date in:(NSInteger)category {
     NSDateFormatter *fmtr = [[NSDateFormatter alloc] init];
+    fmtr.dateStyle = NSDateFormatterLongStyle;
+    fmtr.timeStyle = NSDateFormatterLongStyle;
     const char *record_date = [[fmtr stringFromDate:[NSDate date]] UTF8String];
     const char *exp_date = [[fmtr stringFromDate:expense_date] UTF8String];
     sqlite3_stmt *stmt;
     sqlite3_prepare_v2(conn, "INSERT INTO expenses (amount, record_date, expense_date, cat_id, notes)"
                        " VALUES (?, ?, ?, ?, ?);", -1, &stmt, NULL);
-    sqlite3_bind_int(stmt, 1, amount);
+    sqlite3_bind_int64(stmt, 1, amount);
     sqlite3_bind_text(stmt, 2, record_date, (int)strlen(record_date), SQLITE_STATIC);
     sqlite3_bind_text(stmt, 3, exp_date, (int)strlen(exp_date), SQLITE_STATIC);
-    sqlite3_bind_int(stmt, 4, category);
+    sqlite3_bind_int64(stmt, 4, category);
     sqlite3_bind_null(stmt, 5);
 
     if (sqlite3_step(stmt) != SQLITE_DONE) {

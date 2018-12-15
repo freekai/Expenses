@@ -12,6 +12,8 @@
 
 @interface MainViewController () <UITextFieldDelegate>
 
+@property (nonatomic) NSInteger amount;
+@property (nonatomic) NSDate *date;
 @property (nonatomic) NSInteger categoryID;
 
 @end
@@ -33,8 +35,9 @@
     [self.categoryUI setInputView:categoryPicker];
     UIToolbar *categoryPickerToolbar = [[UIToolbar alloc] initWithFrame:CGRectMake(0, 0, 320, 44)];
     UIBarButtonItem *categoryPickerDoneBtn = [[UIBarButtonItem alloc] initWithTitle:@"Done"  style:UIBarButtonItemStyleDone target:self action:@selector(showSelectedCategory)];
-    [categoryPickerToolbar setItems: [NSArray arrayWithObjects:categoryPickerDoneBtn, nil]];
+    [categoryPickerToolbar setItems:[NSArray arrayWithObjects:categoryPickerDoneBtn, nil]];
     [self.categoryUI setInputAccessoryView:categoryPickerToolbar];
+    [self.categoryUI setDelegate:self];
 
     /* the date picker */
     datePicker = [[UIDatePicker alloc] init];
@@ -49,7 +52,7 @@
     UIBarButtonItem *datePickerDoneBtn = [[UIBarButtonItem alloc] initWithTitle:@"Done" style:UIBarButtonItemStyleDone target:self action:@selector(showSelectedDate)];
     [datePickerToolbar setItems:[NSArray arrayWithObjects:datePickerDoneBtn, nil]];
     [self.dateUI setInputAccessoryView:datePickerToolbar];
-
+    
 }
 
 - (void)viewDidAppear:(BOOL)animated {
@@ -71,6 +74,7 @@
     NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
     [formatter setDateFormat:@"MMM dd, YYYY"];
     self.dateUI.text = [NSString stringWithFormat:@"%@", [formatter stringFromDate:date]];
+    self.date = date;
 }
 
 - (void)showSelectedDate {
@@ -92,20 +96,30 @@
 }
 
 - (IBAction)addUIClicked:(id)sender {
-    NSString *date = self.dateUI.text;
-    NSString *amount = self.amountUI.text;
-    NSInteger cid = self.categoryID;
-    NSLog(@"%@", date);
-    NSLog(@"%@", amount);
-    NSLog(@"%ld", (long)cid);
+    /* FIXME: check the values. */
+    DB *db = [DB getDBM];
+    [db addExpense:(int)self.amount on:self.date in:self.categoryID];
 }
 
 
 /* --- UITextFieldDelegate implementation */
 
 - (BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string {
-    if (textField == self.dateUI) return NO;
-    return NO;
+    if (textField == self.dateUI || textField == self.categoryUI) {
+        return NO;
+    } else if (textField == self.amountUI) {
+        static NSNumberFormatter *nf = nil;
+        if (!nf) {
+            nf = [[NSNumberFormatter alloc] init];
+        }
+        NSString *result = [self.amountUI.text stringByReplacingCharactersInRange:range withString:string];
+        NSNumber *number = [nf numberFromString:result];
+        if (!number) return NO;
+        if (((int)([number doubleValue]*1000)) % 10) {
+            return NO;
+        }
+    }
+    return YES;
 }
 
 

@@ -10,7 +10,7 @@
 
 @interface DB : NSObject
 
-- (BOOL)addExpense:(int)amount on:(NSDate *)date in:(int)category;
+- (BOOL)addExpense:(NSInteger)amount on:(NSDate *)date in:(NSInteger)category;
 
 - (NSArray *)getCategories;
 
