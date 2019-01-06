@@ -95,10 +95,29 @@
     
 }
 
+- (void)clearForm {
+    self.amountUI.text = @"";
+    self.categoryUI.text = @"";
+    self.dateUI.text = @"";
+}
+
 - (IBAction)addUIClicked:(id)sender {
-    /* FIXME: check the values. */
+    [self.view endEditing:YES];
+    if (!self.amount) {
+        [self.amountUI becomeFirstResponder];
+        return;
+    }
+    if (!self.categoryID) {
+        [self.categoryUI becomeFirstResponder];
+        return;
+    }
+    if (!self.date) {
+        [self.dateUI becomeFirstResponder];
+    }
     DB *db = [DB getDBM];
-    [db addExpense:(int)self.amount on:self.date in:self.categoryID];
+    if ([db addExpense:(int)self.amount on:self.date in:self.categoryID]) {
+        [self clearForm];
+    }
 }
 
 
@@ -118,6 +137,7 @@
         if (((int)([number doubleValue]*1000)) % 10) {
             return NO;
         }
+        self.amount = [number longValue];
     }
     return YES;
 }
